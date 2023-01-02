@@ -1,0 +1,34 @@
+
+cd playbook/
+
+create inventory file
+#inventory
+[app_servers]
+172.16.238.10   ansible_user=tony  ansible_ssh_pass=Ir0nM@n
+172.16.238.11   ansible_user=steve ansible_ssh_pass=Am3ric@
+172.16.238.12   ansible_user=banner ansible_ssh_pass=BigGr33n
+
+
+#create playbook.yml (ensure this the name not .yaml)
+playbook.yml
+- hosts: all
+  become: true
+  tasks:
+  - name: create file
+    ansible.builtin.file:
+     path: /opt/webapp.txt              ## change filename as per the question
+     state: touch
+  - name: permissions
+    ansible.builtin.file:
+     path: /opt/webapp.txt              ## change filename as per the question
+     owner: "{{ ansible_user }}"
+     group: "{{ ansible_user }}"
+     mode: '0744'                       ## change permissions as per the question
+     
+#run
+
+ansible-playbook -i inventory playbook.yaml
+
+# check permissions
+
+ansible -i inventory all -m shell -a "ls -lha /opt/webapp.txt"             ## change filename as per the question
