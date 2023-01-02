@@ -1,0 +1,4 @@
+file { '/opt/sysops/blog.txt':
+      content => "Welcome to xFusionCorp Industries!",
+      mode => "0644"
+}
