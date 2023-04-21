@@ -1,0 +1,34 @@
+- hosts: stapp02
+  become: yes
+  gather_facts: no
+  tasks:
+  - name: install httpd
+    yum:
+      name: httpd
+      state: present
+  - name: install php
+    yum: 
+      name: php
+      state: present
+  - name: create root directory
+    file:
+      path: /var/www/html/myroot
+      state: directory
+      owner: apache
+      group: apache
+  - name: replace path
+    lineinfile:
+      dest=/etc/httpd/conf/httpd.conf
+      regexp="^DocumentRoot" 
+      line="DocumentRoot /var/www/html/myroot"
+      state=present
+  - name: copy tempalte
+    template:
+      src: templates/phpinfo.php.j2
+      dest: /var/www/html/myroot/phpinfo.php
+      owner: apache
+      group: apache
+  - name: start
+    service:
+      name: httpd
+      state: started
